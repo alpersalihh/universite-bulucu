@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üniversite Bölüm Önerisi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --card-bg: #242424;
+            --primary-color: #4a90e2;
+            --secondary-color: #5ca9fb;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --shadow-light: #2a2a2a;
+            --shadow-dark: #151515;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --hover-color: #2c2c2c;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .question-card {
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .question-card.animate__animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .question-card:hover {
+            background: var(--hover-color);
+        }
+
+        .question-card h5 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .form-check {
+            margin: 0.8rem 0;
+            padding: 1rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            background: var(--card-bg);
+            cursor: pointer;
+        }
+
+        .form-check:hover {
+            background: var(--hover-color);
+        }
+
+        .form-check-input {
+            display: none;
+        }
+
+        .form-check-label {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            padding-left: 0.5rem;
+            cursor: pointer;
+            width: 100%;
+            display: block;
+        }
+
+        .form-check.selected {
+            background: var(--primary-color);
+        }
+
+        .form-check.selected .form-check-label {
+            color: white;
+        }
+
+        .btn-primary {
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            background: var(--primary-color);
+            border: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .result-section {
+            margin-top: 3rem;
+            padding: 2.5rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .result-section.animate__animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+
+        .list-group-item {
+            margin-bottom: 1rem;
+            padding: 1.2rem;
+            border-radius: 10px !important;
+            background: var(--card-bg);
+            border: none;
+            color: var(--text-primary);
+        }
+
+        .list-group-item i {
+            color: var(--primary-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            padding: 1.2rem;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+            background: var(--card-bg);
+        }
+
+        .excel-download {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .excel-download .btn {
+            background: var(--success-color);
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border-radius: 10px;
+        }
+
+        .excel-download .btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--shadow-light);
+        }
+
+        .form-control {
+            background: var(--card-bg);
+            border: none;
+            color: var(--text-primary);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .form-control:focus {
+            background: var(--hover-color);
+            color: var(--text-primary);
+            box-shadow: none;
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        footer {
+            background: var(--card-bg);
+            border-top: 1px solid var(--shadow-light);
+            color: var(--text-secondary);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-content {
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .ai-loading {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+
+        .ai-loading-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: ai-spin 2s linear infinite;
+        }
+
+        .ai-loading-circle:nth-child(2) {
+            border-top-color: var(--secondary-color);
+            animation-delay: 0.5s;
+            transform: scale(0.8);
+        }
+
+        .ai-loading-circle:nth-child(3) {
+            border-top-color: var(--success-color);
+            animation-delay: 1s;
+            transform: scale(0.6);
+        }
+
+        .ai-loading-dots {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 4px;
+        }
+
+        .ai-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            animation: ai-pulse 1.5s ease-in-out infinite;
+        }
+
+        .ai-dot:nth-child(2) {
+            animation-delay: 0.2s;
+            background: var(--secondary-color);
+        }
+
+        .ai-dot:nth-child(3) {
+            animation-delay: 0.4s;
+            background: var(--success-color);
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-top: 2rem;
+            animation: ai-fade 2s ease-in-out infinite;
+        }
+
+        @keyframes ai-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes ai-pulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        @keyframes ai-fade {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Enhanced Animations */
+        .question-card {
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .result-section {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-check {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-check:hover {
+            transform: translateX(5px);
+        }
+
+        .form-check.selected {
+            transform: translateX(10px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        .form-text {
+            color: var(--text-primary);
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        .form-text i {
+            color: var(--primary-color);
+            margin-right: 0.3rem;
+        }
+
+        small.form-text {
+            color: var(--text-primary);
+            opacity: 0.8;
+        }
+
+        /* Poster Design Styles */
+        .poster-container {
+            display: none;
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 1200px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--bg-color) 0%, var(--card-bg) 100%);
+            color: var(--text-primary);
+        }
+
+        .poster-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .poster-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .poster-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .poster-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .poster-section-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .poster-section-title i {
+            margin-right: 10px;
+        }
+
+        .poster-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .poster-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .poster-card-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .poster-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .poster-list-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .poster-list-item i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .poster-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid var(--primary-color);
+            color: var(--text-secondary);
+        }
+
+        .download-poster {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .download-poster .btn {
+            background: var(--primary-color);
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .download-poster .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .download-poster .btn i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="ai-loading">
+                <div class="ai-loading-circle"></div>
+                <div class="ai-loading-circle"></div>
+                <div class="ai-loading-circle"></div>
+                <div class="ai-loading-dots">
+                    <div class="ai-dot"></div>
+                    <div class="ai-dot"></div>
+                    <div class="ai-dot"></div>
+                </div>
+            </div>
+            <div class="loading-text">AI Bölüm Önerileri Hazırlanıyor...</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="text-center mb-5 animate__animated animate__fadeIn" style="color: var(--primary-color); font-size: 2.5rem; font-weight: 700;">
+            <i class="fas fa-graduation-cap me-3"></i>Üniversite Bölüm Önerisi
+        </h1>
+        
+        {% if error_dt %}
+        <div class="error-message animate__animated animate__fadeIn">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            {{ error_dt }}
+        </div>
+        {% endif %}
+
+        <form method="POST" class="mb-5" id="recommendationForm">
+            <div class="mb-4">
+                <h4 class="section-title">
+                    <i class="fas fa-user-graduate me-2"></i>
+                    Yeteneklerinizi ve İlgi Alanlarınızı Değerlendirin
+                </h4>
+                <p class="text-secondary" style="font-size: 1.1rem;">
+                    Her bir özellik için kendinizi değerlendirin ve en uygun seçeneği işaretleyin.
+                </p>
+            </div>
+
+            <!-- Bölge Seçimi -->
+            <div class="question-card">
+                <h5><i class="fas fa-map-marked-alt me-2"></i>Tercih Ettiğiniz Bölge</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="bolge" id="bolge_ic" value="ic_anadolu"
+                           {% if form_inputs and form_inputs.bolge == 'ic_anadolu' %}checked{% endif %} required>
+                    <label class="form-check-label" for="bolge_ic">
+                        İç Anadolu Bölgesi
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="bolge" id="bolge_marmara" value="marmara"
+                           {% if form_inputs and form_inputs.bolge == 'marmara' %}checked{% endif %} required>
+                    <label class="form-check-label" for="bolge_marmara">
+                        Marmara Bölgesi
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="bolge" id="bolge_ege" value="ege"
+                           {% if form_inputs and form_inputs.bolge == 'ege' %}checked{% endif %} required>
+                    <label class="form-check-label" for="bolge_ege">
+                        Ege Bölgesi
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="bolge" id="bolge_akdeniz" value="akdeniz"
+                           {% if form_inputs and form_inputs.bolge == 'akdeniz' %}checked{% endif %} required>
+                    <label class="form-check-label" for="bolge_akdeniz">
+                        Akdeniz Bölgesi
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="bolge" id="bolge_karadeniz" value="karadeniz"
+                           {% if form_inputs and form_inputs.bolge == 'karadeniz' %}checked{% endif %} required>
+                    <label class="form-check-label" for="bolge_karadeniz">
+                        Karadeniz Bölgesi
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="bolge" id="bolge_dogu" value="dogu"
+                           {% if form_inputs and form_inputs.bolge == 'dogu' %}checked{% endif %} required>
+                    <label class="form-check-label" for="bolge_dogu">
+                        Doğu Anadolu Bölgesi
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="bolge" id="bolge_guneydogu" value="guneydogu"
+                           {% if form_inputs and form_inputs.bolge == 'guneydogu' %}checked{% endif %} required>
+                    <label class="form-check-label" for="bolge_guneydogu">
+                        Güneydoğu Anadolu Bölgesi
+                    </label>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Üniversite eğitimi almak istediğiniz bölgeyi seçin.
+                </div>
+            </div>
+
+            <!-- Eğitim Seviyesi -->
+            <div class="question-card">
+                <h5><i class="fas fa-graduation-cap me-2"></i>Eğitim Seviyesi</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="egitim_seviyesi" id="egitim_lisans" value="lisans"
+                           {% if form_inputs and form_inputs.egitim_seviyesi == 'lisans' %}checked{% endif %} required>
+                    <label class="form-check-label" for="egitim_lisans">
+                        Lisans (4 Yıl)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="egitim_seviyesi" id="egitim_onlisans" value="onlisans"
+                           {% if form_inputs and form_inputs.egitim_seviyesi == 'onlisans' %}checked{% endif %} required>
+                    <label class="form-check-label" for="egitim_onlisans">
+                        Ön Lisans (2 Yıl)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="egitim_seviyesi" id="egitim_kararsiz" value="kararsiz"
+                           {% if form_inputs and form_inputs.egitim_seviyesi == 'kararsiz' %}checked{% endif %} required>
+                    <label class="form-check-label" for="egitim_kararsiz">
+                        Kararsızım, Her İkisini de Değerlendirebilirim
+                    </label>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Tercih ettiğiniz eğitim seviyesini seçin. Kararsızsanız, her iki seviye için de öneriler sunulacaktır.
+                </div>
+            </div>
+
+            <!-- Kendini Tanıtma -->
+            <div class="question-card">
+                <h5><i class="fas fa-user-edit me-2"></i>Kendinizi Tanıtın</h5>
+                <div class="form-group">
+                    <textarea class="form-control" name="kendini_tanit" id="kendini_tanit" rows="3" 
+                              maxlength="100" placeholder="Kendinizi kısaca tanıtın (maksimum 100 karakter)"
+                              required>{% if form_inputs and form_inputs.kendini_tanit %}{{ form_inputs.kendini_tanit }}{% endif %}</textarea>
+                    <small class="form-text text-muted">
+                        <span id="charCount">0</span>/100 karakter
+                    </small>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    İlgi alanlarınızı, hedeflerinizi ve kişisel özelliklerinizi kısaca anlatın.
+                </div>
+            </div>
+
+            <!-- Sayısal Yetenek -->
+            <div class="question-card">
+                <h5><i class="fas fa-calculator me-2"></i>Sayısal Yetenek</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sayisal_yatkinlik" id="sayisal_evet" value="1" 
+                           {% if form_inputs and form_inputs.sayisal_yatkinlik == '1' %}checked{% endif %} required>
+                    <label class="form-check-label" for="sayisal_evet">
+                        Evet, sayısal derslerde başarılıyım
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sayisal_yatkinlik" id="sayisal_hayir" value="0"
+                           {% if form_inputs and form_inputs.sayisal_yatkinlik == '0' %}checked{% endif %} required>
+                    <label class="form-check-label" for="sayisal_hayir">
+                        Hayır, sayısal derslerde zorlanıyorum
+                    </label>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Matematik, fizik gibi sayısal derslerdeki başarınızı değerlendirin.
+                </div>
+            </div>
+
+            <!-- Sözel Yetenek -->
+            <div class="question-card">
+                <h5><i class="fas fa-book me-2"></i>Sözel Yetenek</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sozel_yatkinlik" id="sozel_evet" value="1"
+                           {% if form_inputs and form_inputs.sozel_yatkinlik == '1' %}checked{% endif %} required>
+                    <label class="form-check-label" for="sozel_evet">
+                        Evet, sözel derslerde başarılıyım
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sozel_yatkinlik" id="sozel_hayir" value="0"
+                           {% if form_inputs and form_inputs.sozel_yatkinlik == '0' %}checked{% endif %} required>
+                    <label class="form-check-label" for="sozel_hayir">
+                        Hayır, sözel derslerde zorlanıyorum
+                    </label>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Türkçe, edebiyat gibi sözel derslerdeki başarınızı değerlendirin.
+                </div>
+            </div>
+
+            <!-- Sanat İlgisi -->
+            <div class="question-card">
+                <h5><i class="fas fa-palette me-2"></i>Sanat İlgisi</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sanat_ilgisi" id="sanat_evet" value="1"
+                           {% if form_inputs and form_inputs.sanat_ilgisi == '1' %}checked{% endif %} required>
+                    <label class="form-check-label" for="sanat_evet">
+                        Evet, sanata ilgim var
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sanat_ilgisi" id="sanat_hayir" value="0"
+                           {% if form_inputs and form_inputs.sanat_ilgisi == '0' %}checked{% endif %} required>
+                    <label class="form-check-label" for="sanat_hayir">
+                        Hayır, sanata ilgim yok
+                    </label>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Müzik, resim, tiyatro gibi sanat dallarına olan ilginizi değerlendirin.
+                </div>
+            </div>
+
+            <!-- Sosyal İlişkiler -->
+            <div class="question-card">
+                <h5><i class="fas fa-users me-2"></i>Sosyal İlişkiler</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sosyal_yatkinlik" id="sosyal_evet" value="1"
+                           {% if form_inputs and form_inputs.sosyal_yatkinlik == '1' %}checked{% endif %} required>
+                    <label class="form-check-label" for="sosyal_evet">
+                        Evet, sosyal ilişkilerde başarılıyım
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sosyal_yatkinlik" id="sosyal_hayir" value="0"
+                           {% if form_inputs and form_inputs.sosyal_yatkinlik == '0' %}checked{% endif %} required>
+                    <label class="form-check-label" for="sosyal_hayir">
+                        Hayır, sosyal ilişkilerde zorlanıyorum
+                    </label>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    İnsanlarla iletişim kurma ve yönetme becerinizi değerlendirin.
+                </div>
+            </div>
+
+            <!-- Yaratıcı Düşünme -->
+            <div class="question-card">
+                <h5><i class="fas fa-lightbulb me-2"></i>Yaratıcı Düşünme</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="yaratici_yatkinlik" id="yaratici_evet" value="1"
+                           {% if form_inputs and form_inputs.yaratici_yatkinlik == '1' %}checked{% endif %} required>
+                    <label class="form-check-label" for="yaratici_evet">
+                        Evet, yaratıcı düşünme yeteneğim var
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="yaratici_yatkinlik" id="yaratici_hayir" value="0"
+                           {% if form_inputs and form_inputs.yaratici_yatkinlik == '0' %}checked{% endif %} required>
+                    <label class="form-check-label" for="yaratici_hayir">
+                        Hayır, yaratıcı düşünmede zorlanıyorum
+                    </label>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Yeni fikirler üretme ve problemlere yaratıcı çözümler bulma becerinizi değerlendirin.
+                </div>
+            </div>
+
+            <!-- Teknoloji İlgisi -->
+            <div class="question-card">
+                <h5><i class="fas fa-microchip me-2"></i>Teknoloji İlgisi</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="teknoloji_ilgisi" id="teknoloji_evet" value="1"
+                           {% if form_inputs and form_inputs.teknoloji_ilgisi == '1' %}checked{% endif %} required>
+                    <label class="form-check-label" for="teknoloji_evet">
+                        Evet, teknolojiye ilgim var
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="teknoloji_ilgisi" id="teknoloji_hayir" value="0"
+                           {% if form_inputs and form_inputs.teknoloji_ilgisi == '0' %}checked{% endif %} required>
+                    <label class="form-check-label" for="teknoloji_hayir">
+                        Hayır, teknolojiye ilgim yok
+                    </label>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Yeni teknolojileri takip etme ve kullanma konusundaki ilginizi değerlendirin.
+                </div>
+            </div>
+
+            <!-- Dil Yeteneği -->
+            <div class="question-card">
+                <h5><i class="fas fa-language me-2"></i>Dil Yeteneği</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="dil_yetenegi" id="dil_evet" value="1"
+                           {% if form_inputs and form_inputs.dil_yetenegi == '1' %}checked{% endif %} required>
+                    <label class="form-check-label" for="dil_evet">
+                        Evet, dil öğrenmeye yatkınım
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="dil_yetenegi" id="dil_hayir" value="0"
+                           {% if form_inputs and form_inputs.dil_yetenegi == '0' %}checked{% endif %} required>
+                    <label class="form-check-label" for="dil_hayir">
+                        Hayır, dil öğrenmede zorlanıyorum
+                    </label>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Yabancı dil öğrenme ve kullanma konusundaki yeteneğinizi değerlendirin.
+                </div>
+            </div>
+
+            <!-- Liderlik -->
+            <div class="question-card">
+                <h5><i class="fas fa-crown me-2"></i>Liderlik</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="liderlik" id="liderlik_evet" value="1"
+                           {% if form_inputs and form_inputs.liderlik == '1' %}checked{% endif %} required>
+                    <label class="form-check-label" for="liderlik_evet">
+                        Evet, liderlik özelliklerim var
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="liderlik" id="liderlik_hayir" value="0"
+                           {% if form_inputs and form_inputs.liderlik == '0' %}checked{% endif %} required>
+                    <label class="form-check-label" for="liderlik_hayir">
+                        Hayır, liderlik özelliklerim yok
+                    </label>
+                </div>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Grup çalışmalarında liderlik yapma ve yönlendirme becerinizi değerlendirin.
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-magic me-2"></i>
+                    Bölüm Önerisi Al
+                </button>
+            </div>
+        </form>
+
+        {% if prediction_dt %}
+        <div class="result-section animate__animated animate__fadeIn" id="results">
+            <h3>
+                <i class="fas fa-star me-2"></i>
+                Önerilen Bölümler
+            </h3>
+            
+            {% for i in range(prediction_dt|length) %}
+            <div class="mb-4 p-4" style="background: var(--hover-color); border-radius: 10px;">
+                <h4 class="text-primary mb-3" style="color: var(--primary-color);">
+                    <i class="fas fa-book-open me-2"></i>
+                    {{ prediction_dt[i] }}
+                </h4>
+                
+                {% if aciklama_api and aciklama_api[i] %}
+                <div class="mb-3">
+                    <h5 class="mb-2" style="color: var(--text-primary);">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Bölüm Hakkında
+                    </h5>
+                    <p class="text-secondary">{{ aciklama_api[i] }}</p>
+                </div>
+                {% endif %}
+
+                {% if is_imkanlari_api and is_imkanlari_api[i] %}
+                <div class="mb-3">
+                    <h5 class="mb-2" style="color: var(--text-primary);">
+                        <i class="fas fa-briefcase me-2"></i>
+                        İş İmkanları
+                    </h5>
+                    <ul class="list-group">
+                        {% for is in is_imkanlari_api[i] %}
+                        <li class="list-group-item">
+                            <i class="fas fa-check-circle me-2"></i>
+                            {{ is }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if universiteler_api and universiteler_api[i] %}
+                <div class="mb-3">
+                    <h5 class="mb-2" style="color: var(--text-primary);">
+                        <i class="fas fa-university me-2"></i>
+                        Önerilen Üniversiteler
+                    </h5>
+                    <ul class="list-group">
+                        {% for uni in universiteler_api[i] %}
+                        <li class="list-group-item">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            {{ uni }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% if analiz_api %}
+            <div class="mb-4 p-4" style="background: var(--hover-color); border-radius: 10px;">
+                <h4 class="mb-3" style="color: var(--primary-color);">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Profil Analizi
+                </h4>
+                <p class="text-secondary">{{ analiz_api }}</p>
+            </div>
+            {% endif %}
+
+            {% if excel_data %}
+            <div class="download-poster">
+                <button onclick="generatePoster()" class="btn">
+                    <i class="fas fa-image"></i>
+                    Sonuçları Poster Olarak İndir
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0">
+                <i class="fas fa-copyright me-1"></i>
+                2024 Alper Salih Demirci. Tüm hakları saklıdır.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Hidden Poster Template -->
+    <div id="posterTemplate" class="poster-container">
+        <div class="poster-header">
+            <h1 class="poster-title">Üniversite Bölüm Önerileri</h1>
+            <p class="poster-subtitle">Kişiselleştirilmiş Kariyer Yolculuğu</p>
+        </div>
+
+        {% if prediction_dt %}
+        <div class="poster-grid">
+            {% for i in range(prediction_dt|length) %}
+            <div class="poster-card">
+                <h3 class="poster-card-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    {{ prediction_dt[i] }}
+                </h3>
+                
+                {% if aciklama_api and aciklama_api[i] %}
+                <div class="poster-section">
+                    <h4 class="poster-section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Bölüm Hakkında
+                    </h4>
+                    <p>{{ aciklama_api[i] }}</p>
+                </div>
+                {% endif %}
+
+                {% if is_imkanlari_api and is_imkanlari_api[i] %}
+                <div class="poster-section">
+                    <h4 class="poster-section-title">
+                        <i class="fas fa-briefcase"></i>
+                        İş İmkanları
+                    </h4>
+                    <ul class="poster-list">
+                        {% for is in is_imkanlari_api[i] %}
+                        <li class="poster-list-item">
+                            <i class="fas fa-check-circle"></i>
+                            {{ is }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if universiteler_api and universiteler_api[i] %}
+                <div class="poster-section">
+                    <h4 class="poster-section-title">
+                        <i class="fas fa-university"></i>
+                        Önerilen Üniversiteler
+                    </h4>
+                    <ul class="poster-list">
+                        {% for uni in universiteler_api[i] %}
+                        <li class="poster-list-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{ uni }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if analiz_api %}
+        <div class="poster-section">
+            <h4 class="poster-section-title">
+                <i class="fas fa-chart-line"></i>
+                Profil Analizi
+            </h4>
+            <p>{{ analiz_api }}</p>
+        </div>
+        {% endif %}
+
+        <div class="poster-footer">
+            <p>
+                <i class="fas fa-copyright"></i>
+                2025 Alper Salih Demirci. Tüm hakları saklıdır.
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form gönderimi için AJAX işlemi
+        document.getElementById('recommendationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+            
+            const formData = new FormData(this);
+            
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Sonuçları güncelle
+                const results = document.getElementById('results');
+                if (results) {
+                    results.innerHTML = doc.getElementById('results').innerHTML;
+                } else {
+                    const newResults = doc.getElementById('results');
+                    document.querySelector('.container').appendChild(newResults);
+                }
+                
+                // Sonuçlara kaydır
+                const resultsElement = document.getElementById('results');
+                if (resultsElement) {
+                    resultsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                
+                // Loading'i gizle
+                loadingOverlay.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loadingOverlay.style.display = 'none';
+            });
+        });
+
+        // Sayfa yüklendiğinde sonuçlara otomatik kaydır
+        window.addEventListener('load', function() {
+            const results = document.getElementById('results');
+            if (results) {
+                setTimeout(function() {
+                    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 500);
+            }
+        });
+
+        // Soru kartları için animasyon
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.question-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Seçenek seçme işlevi
+            const formChecks = document.querySelectorAll('.form-check');
+            formChecks.forEach(check => {
+                check.addEventListener('click', function() {
+                    // Aynı soru grubundaki diğer seçenekleri temizle
+                    const questionCard = this.closest('.question-card');
+                    const otherOptions = questionCard.querySelectorAll('.form-check');
+                    otherOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Seçilen seçeneği işaretle
+                    this.classList.add('selected');
+                    
+                    // Radio input'u seç
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.checked = true;
+                    }
+                });
+            });
+        });
+
+        // Karakter sayacı
+        document.getElementById('kendini_tanit').addEventListener('input', function() {
+            var maxLength = 100;
+            var currentLength = this.value.length;
+            document.getElementById('charCount').textContent = currentLength;
+            
+            if (currentLength > maxLength) {
+                this.value = this.value.substring(0, maxLength);
+                document.getElementById('charCount').textContent = maxLength;
+            }
+        });
+
+        function generatePoster() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+            
+            const poster = document.getElementById('posterTemplate');
+            poster.style.display = 'block';
+            
+            html2canvas(poster, {
+                scale: 2,
+                backgroundColor: null,
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'universite_onerileri.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                poster.style.display = 'none';
+                loadingOverlay.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
